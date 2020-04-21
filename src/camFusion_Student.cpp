@@ -149,7 +149,7 @@ void clusterKptMatchesWithROI(BoundingBox &boundingBox, std::vector<cv::KeyPoint
         //cv::KeyPoint kptPrev = kptsCurr[mat->queryIdx];
             if(boundingBox.roi.contains(kptCurr.pt))
             {
-                if (mat->distance<2*distance_avg)
+                if (mat->distance<1.2*distance_avg)
                     bBox_kptMatches.push_back(*mat);
             }
     } 
@@ -203,11 +203,12 @@ void computeTTCCamera(std::vector<cv::KeyPoint> &kptsPrev, std::vector<cv::KeyPo
 
     // // STUDENT TASK (replacement for meanDistRatio)
     std::sort(distRatios.begin(), distRatios.end());
-    long medIndex = floor(distRatios.size() / 2.0);
-    double medDistRatio = distRatios.size() % 2 == 0 ? (distRatios[medIndex - 1] + distRatios[medIndex]) / 2.0 : distRatios[medIndex]; // compute median dist. ratio to remove outlier influence
+    double medianDistRatio = distRatios[distRatios.size() / 2];
+    //long medIndex = floor(distRatios.size() / 2.0);
+    //double medDistRatio = distRatios.size() % 2 == 0 ? (distRatios[medIndex - 1] + distRatios[medIndex]) / 2.0 : distRatios[medIndex]; // compute median dist. ratio to remove outlier influence
 
     double dT = 1 / frameRate;
-    TTC = -dT / (1 - medDistRatio);
+    TTC = -dT / (1 - medianDistRatio);
     // EOF STUDENT TASK
 }
 
@@ -297,7 +298,48 @@ void matchBoundingBoxes(std::vector<cv::DMatch> &matches, std::map<int, int> &bb
     }
     bbBestMatches.insert(std::pair<int,int>(bbox_prev->boxID,max_curr));
     //cout<<bbox_prev->boxID<<" "<<max_curr<<endl;
-    }
+
+    }}
+        // 'bb' is bounding box
+
+    // std::map<std::pair<int, int>, int> bb_matches;
+    // for (auto match : matches)
+    // {
+    //     // 'match' function was called with 'cur_frame' as reference,
+    //     // => trainId refers to keypoint in cur_frame, queryId is previous frame.
+    //     auto prev_keypoint = prevFrame.keypoints[match.queryIdx];
+    //     auto curr_keypoint = currFrame.keypoints[match.trainIdx];
+
+    //     // count common keypoints for previous and current frames' bounding boxes
+    //     for (auto curr_bb : currFrame.boundingBoxes)
+    //     {
+    //         if (curr_bb.roi.contains(curr_keypoint.pt))
+    //         {
+    //             for (auto prev_bb : prevFrame.boundingBoxes)
+    //             {
+    //                 if (prev_bb.roi.contains(prev_keypoint.pt))
+    //                 {
+    //                     auto key = std::make_pair(prev_bb.boxID, curr_bb.boxID);
+    //                     bb_matches[key]++;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // // max number of matches per bounding box
+    // std::map<int, int> max_matches;
+
+    // // find pair with most matches
+    // for (auto bb_match : bb_matches)
+    // {
+    //     if (max_matches[bb_match.first.first] < bb_match.second)
+    //     {
+    //         max_matches[bb_match.first.first] = bb_match.second;
+    //         bbBestMatches[bb_match.first.first] = bb_match.first.second;
+    //     }
+    // }
+    // }
 
     // for (std::vector<BoundingBox>::iterator bbox_prev = prevFrame.boundingBoxes.begin(); bbox_prev!=prevFrame.boundingBoxes.end(); ++bbox_prev)
     // {
@@ -327,4 +369,3 @@ void matchBoundingBoxes(std::vector<cv::DMatch> &matches, std::map<int, int> &bb
     // bbBestMatches.insert ( std::pair<int,int>(bbox_prev->boxID,highest_count) );
     // cout<<bbox_prev->boxID<<" "<<highest_count<<endl;
     // }}
-}

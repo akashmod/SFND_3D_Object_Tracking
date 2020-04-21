@@ -26,10 +26,19 @@ using namespace std;
 int main(int argc, const char *argv[])
 {
     /* INIT VARIABLES AND DATA STRUCTURES */
+// std::ofstream myfile;
+// myfile.open ("example.csv");
+// myfile << ", This is the first cell in the first column.\n";
+    //   myfile << "a,b,c,\n";
+    //   myfile << "c,s,v,\n";
+    //   myfile << "1,2,3.456\n";
+    //   myfile << "semi;colon";
+      
 
      std::vector<std::string> detectors_ {"SHITOMASI","HARRIS", "FAST", "BRISK", "ORB", "AKAZE"};
-     std::vector<std::string> descriptors_ {"BRISK","BRIEF", "ORB", "FREAK"};
-    
+     //std::vector<std::string> detectors_ {"SHITOMASI"};
+     std::vector<std::string> descriptors_ {"BRISK","BRIEF","ORB","FREAK"};
+//fout<<"Printhere";
  for ( std::string detector_ : detectors_)
  {
      for (std::string descriptor_ : descriptors_)
@@ -290,7 +299,8 @@ int main(int argc, const char *argv[])
                         char str[200];
                         sprintf(str, "TTC Lidar : %f s, TTC Camera : %f s", ttcLidar, ttcCamera);
                         putText(visImg, str, cv::Point2f(80, 50), cv::FONT_HERSHEY_PLAIN, 2, cv::Scalar(0,0,255));
-
+                        //fout<<ttcLidar<<", "<<ttcCamera<<", \n";
+                        //myfile << ttcLidar<<","<<ttcCamera<<"\n";
                         string windowName = "Final Results : TTC";
                         cv::namedWindow(windowName, 4);
                         cv::imshow(windowName, visImg);
@@ -306,5 +316,7 @@ int main(int argc, const char *argv[])
 
     } // eof loop over all images
      }}
+     //myfile.close();
     return 0;
+    
 }
